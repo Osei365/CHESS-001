@@ -35,15 +35,13 @@ def index():
 @app.route('/play', methods=['POST'], strict_slashes=False)
 def play_game():
     dic = request.get_json()
-    if dic['fen'] != '':
-        board = chess.Board(dic['fen'])
-    else:
-        board = chess.Board()
+    board = chess.Board(dic['fen'])
     move = chess.Move.from_uci(dic['move'])
     result = {'fen': board.fen()}
     if move in board.legal_moves:
         result['answer'] = 'true'
         result['san'] = str(board.san(move))
+        print(move)
         board.push(move)
         print(board)
         result['fen'] = board.fen()
@@ -59,7 +57,9 @@ def computer():
     result = engine.play(board, chess.engine.Limit(time=0.1))
     new_dic = {'move': str(result.move)}
     new_dic['san'] = str(board.san(result.move))
+    print(result.move)
     board.push(result.move)
+    print(board)
     new_dic['fen'] = board.fen()
     
     return jsonify(new_dic)

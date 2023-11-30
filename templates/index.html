@@ -4,121 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CHESS</title>
+    <link rel="stylesheet" href="../static/styles/chessstyle.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
     <script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js"></script>
-
-    <style>
-        html{
-            height: 100vh;
-            padding: 0;
-        }
-        body { 
-            margin: 0;
-            height: 100%;
-            background-color: rgb(33, 30, 30);
-         }
-        .wrapper {
-            display: grid;
-            grid-template-columns: repeat(8, 60px);
-            grid-auto-rows: 60px;
-            border: 45px ridge transparent;
-            border-image: url('../static/images/wood2.jpeg') 50 repeat;
-            box-shadow: 10px 5px 5px rgba(0, 0, 0, 0.231);
-        }
-
-        .even {
-            background-image: url('../static/images/images.jpeg');
-            background-repeat: repeat;
-        }
-        .odd {
-            background-image: url('../static/images/wooden-laminate-sheet.jpg');
-            background-repeat: repeat;
-        }
-
-        img {
-            width: 60px;
-            height: 60px;
-        }
-
-        .hide {
-            display: none;
-        }
-
-        .drag-over {
-            border: solid 3px yellow;
-        }
-
-        .chess-container {
-            height: 100%;
-            display: flex;
-            justify-content: space-evenly;
-            align-items: center;    
-        }
-
-        .first-part {
-            display: flex;
-            justify-content: center;
-        }
-
-        .second-part {
-            height: 100%;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-evenly;
-            align-items: center;
-            padding-bottom: 50px;
-        }
-
-        .clock {
-            font-size: 100px;
-            font-weight: bold;
-            color: rgba(222, 184, 135, 0.42);
-        }
-
-        .opponent {
-            height: 90%;
-            display: flex;
-            flex-direction: column;
-            justify-content: flex-start;
-            align-items: center;
-            margin-left: 10px;
-        }
-
-        .player {
-            height: 90%;
-            display: flex;
-            flex-direction: column;
-            justify-content: flex-end;
-            margin-right: 10px;
-            align-items: center;
-        }
-
-        
-
-        .avatar img {
-            width: 40px;
-            height: 40px;
-            border: 1px solid rgba(0, 0, 0, 0.123);
-            border-radius: 50%;
-        }
-
-        .opponent p, .player p {
-            padding: 0;
-            text-align: center;
-            color: burlywood;
-        }
-
-        .san-move {
-            width: 70%;
-            height: 30%;
-            overflow-y: auto;
-            color: burlywood;
-            font-size: 15px;
-            border: 1px solid burlywood;
-            border-radius: 10%;
-            padding: 15px;
-        }  
-    </style>
 </head>
 <body onload="startTimer()">
     <div class="chess-container">
@@ -186,11 +74,11 @@
             <div class="san-move">
             </div>
             <div>
-                <div class="btn-group btn-group-lg" role="group" aria-label="preventDefault button group">
-                    <button type="button" class="btn btn-outline-primary" id="reset">reset</button>
-                    <button type="button" class="btn btn-outline-primary" id="undo">undo</button>
-                    <button type="button" class="btn btn-outline-primary" id="pause">pause</button>
-                    <button type="button" class="btn btn-outline-primary" id="play">play</button>
+                <div class="chess-button">
+                    <button type="button" id="reset">reset</button>
+                    <button type="button" id="undo">undo</button>
+                    <button type="button" id="pause">pause</button>
+                    <button type="button" id="play">play</button>
                 </div>
             </div>
         </div>
@@ -199,8 +87,8 @@
 </html>
 
 <script>
-    let fen_string = '';
-    const fen_list = [fen_string];
+    let default_fen = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1';
+    const fen_list = [default_fen];
     const move_list = [];
     let start = null;
     let timer = null;
@@ -259,15 +147,14 @@
 
     function drop (e) {
         // e.preventDefault();
-        e.target.classList.remove('drag-over')
 
         const id = e.dataTransfer.getData('text/plain');
         if (e.target.tagName === 'IMG') {
-            let parent = e.target.parentElement;
-            parent.classList.remove('drag-over')
-            new_id = parent.id;
+            e.target.parentElement.classList.remove('drag-over')
+            new_id = e.target.parentElement.id;
         }
         else {
+            e.target.classList.remove('drag-over');
             new_id = e.target.id;
         }
         
@@ -284,19 +171,37 @@
             success: function (data) {
                 console.log(data['answer']);
                 if (data['answer'] === 'true') {
-                    if (e.target.tagName === 'IMG') {
-                        let parent = e.target.parentElement;
-                        e.target.classList.add('hide')
-                        parent.insertBefore(draggable, parent.firstChild);
+                    if (parent.id+new_id === 'e1h1' && data['san'] === 'O-O') {
+                        new_id = 'g1';
                     }
-                    else {
-                        e.target.insertBefore(draggable, e.target.firstChild);
+                    else if (parent.id+new_id === 'e1a1' && data['san'] === 'O-O-O') {
+                        new_id = 'c1'
+                    }
+                    const to = document.getElementById(new_id);
+                    
+                    if (to.childNodes.length > 0) {to.firstChild.classList.add('hide')}
+                    to.insertBefore(draggable, to.firstChild);
+
+                    // handling the castling move in chess
+                    if (parent.id+new_id === 'e1g1' && data['san'] === 'O-O') {
+                        console.log(data['san']);
+                        let h1 = document.getElementById('h1');
+                        let f1 = document.getElementById('f1');
+                        f1.insertBefore(h1.firstChild, f1.firstChild);
+                        move_list.push(parent.id+new_id+'h1f1');
+                    } else if (parent.id+new_id === 'e1c1' && data['san'] === 'O-O-O') {
+                        console.log(data['san']);
+                        let a1 = document.getElementById('a1');
+                        let d1 = document.getElementById('d1');
+                        d1.insertBefore(a1.firstChild, d1.firstChild);
+                        move_list.push(parent.id+new_id+'a1d1');
+                    } else {
+                        move_list.push(parent.id+new_id);
                     }
                     $('.san-move').append(`${data['san']} `);
-                    move_list.push(parent.id+new_id);
+                    
                     console.log(move_list);
-                    fen_string = data['fen'];
-                    fen_list.push(fen_string);
+                    fen_list.push(data['fen']);
                     console.log(fen_list);
 
                     computerPlayer(data['fen']);
@@ -310,13 +215,18 @@
     function undo () {
         if (move_list.length >= 1) {
             const str = move_list[move_list.length - 1];
-            const drop_string = str.substring(0, 2);
-            const drag_string = str.substring(2, 4);
-
-            const element1 = document.getElementById(drop_string);
-            const element2 = document.getElementById(drag_string);
-            console.log(element1)
-            console.log(element1.firstChild);
+            // const drop_string = str.substring(0, 2);
+            // const drag_string = str.substring(2, 4);
+            if (str.length === 8) {
+                const castling1 = document.getElementById(str.substring(4, 6));
+                const castling2 = document.getElementById(str.substring(6, 8));
+                castling1.insertBefore(castling2.firstChild, castling1.firstChild);
+                if (castling2.childNodes.length > 0) {
+                    castling2.firstChild.classList.remove('hide');
+                }
+            }
+            const element1 = document.getElementById(str.substring(0, 2));
+            const element2 = document.getElementById(str.substring(2, 4));
             element1.insertBefore(element2.firstChild, element1.firstChild);
             if (element2.childNodes.length > 0) {
                 element2.firstChild.classList.remove('hide');
@@ -344,12 +254,12 @@
             contentType: 'application/json',
             success: function (data) {
                 console.log(data['move']);
-                str = data['move']
-                const drop_string = str.substring(0, 2);
-                const drag_string = str.substring(2, 4);
+                const str = data['move'];
+                // const drop_string = str.substring(0, 2);
+                // const drag_string = str.substring(2, 4);
 
-                const element1 = document.getElementById(drop_string);
-                const element2 = document.getElementById(drag_string);
+                const element1 = document.getElementById(str.substring(0, 2));
+                const element2 = document.getElementById(str.substring(2, 4));
 
                 if (element2.childNodes.length === 0) {
                     element2.appendChild(element1.firstChild);
@@ -358,11 +268,25 @@
                     element2.firstChild.classList.add('hide')
                     element2.insertBefore(element1.firstChild, element2.firstChild)
                 }
+                if (str === 'e8g8' && data['san'] === 'O-O') {
+                    console.log(data['san']);
+                    let h8 = document.getElementById('h8');
+                    let f8 = document.getElementById('f8');
+                    f8.insertBefore(h8.firstChild, f8.firstChild);
+                    move_list.push(str+'h8f8');
+                } else if (str === 'e8c8' && data['san'] === 'O-O-O') {
+                    console.log(data['san']);
+                    let a8 = document.getElementById('a8');
+                    let d8 = document.getElementById('d8');
+                    d8.insertBefore(a8.firstChild, d8.firstChild);
+                    move_list.push(str+'a8d8');
+                } else {
+                    move_list.push(str);
+                }
+
                 $('.san-move').append(`${data['san']} `);
-                move_list.push(str);
                 console.log(move_list);
-                fen_string = data['fen'];
-                fen_list.push(fen_string);
+                fen_list.push(data['fen']);
 
             }
         });
@@ -375,19 +299,29 @@
         showTimer();
     }
 
+    function endTimer() {
+        if (timer) {
+            clearInterval(timer);
+        }
+    }
+
     function showTimer () {
         console.log('show time');
         let hr, min, sec;
         timer = setInterval(() => {
+            // difference between present time and start time
             diff = new Date().getTime() - start;
 
+            // hour derived from the difference
             hr = parseInt(diff/1000/60/60);
             hr = hr < 10 ? '0' + hr : hr;
 
+            // minute derived from the difference
             min = parseInt(diff/1000/60);
             if (min > 59) {min %= 60};
             min = min < 10 ? '0' + min : min;
             
+            // second derived from the difference
             sec = parseInt(diff/1000);
             if (sec > 59) {sec %= 60};
             sec = sec < 10 ? '0' + sec : sec;
@@ -398,13 +332,16 @@
 
     $('#pause').on('click', function () {
         console.log(diff);
-        clearInterval(timer);
+        // pause the time
+        endTimer();
+        console.log(timer);
         $(this).prop('disabled', true);
         $('#play').prop('disabled', false);
     });
 
     $('#play').on('click', function () {
         console.log(start);
+        // calculates the time when game was paused
         start = start + (new Date().getTime() - (diff + start));
         console.log(start)
         showTimer();
@@ -413,12 +350,16 @@
     });
 
     $('#undo').on('click', function () {
+        // undos both the player and computer move
         undo();
         undo();
     });
 
     $('#reset').on('click', function () {
+        // resets the entire game
         reset();
+        endTimer();
+        showTimer();
         $('#pause').prop('disabled', false);
         $('#play').prop('disabled', true);
     });

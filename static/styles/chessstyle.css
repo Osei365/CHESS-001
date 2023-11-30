@@ -1,0 +1,128 @@
+html{
+    height: 100vh;
+    padding: 0;
+}
+body { 
+    margin: 0;
+    height: 100%;
+    background-color: rgb(33, 30, 30);
+ }
+.wrapper {
+    display: grid;
+    grid-template-columns: repeat(8, 3em);
+    grid-auto-rows: 3em;
+    border: 2em ridge transparent;
+    border-image: url('../static/images/wood2.jpeg') 50 repeat;
+    box-shadow: 10px 5px 5px rgba(0, 0, 0, 0.231);
+}
+
+.even {
+    background-image: url('../static/images/images.jpeg');
+    background-repeat: repeat;
+}
+.odd {
+    background-image: url('../static/images/wooden-laminate-sheet.jpg');
+    background-repeat: repeat;
+}
+
+img {
+    width: 3em;
+    height: 3em;
+}
+
+.hide {
+    display: none;
+}
+
+.drag-over {
+    border: solid 3px yellow;
+}
+
+.chess-container {
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;    
+}
+
+.first-part {
+    display: flex;
+    justify-content: center;
+    margin-right: 2em;
+}
+
+.second-part {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    align-items: center;
+    padding-bottom: 50px;
+    margin-left: 2em;
+}
+
+.clock {
+    font-size: 3em;
+    font-weight: bold;
+    color: rgba(222, 184, 135, 0.42);
+}
+
+.opponent {
+    height: 90%;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    margin-left: 10px;
+}
+
+.player {
+    height: 90%;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    margin-right: 10px;
+    align-items: center;
+}
+
+
+
+.avatar img {
+    width: 1em;
+    height: 1em;
+    border: 1px solid rgba(0, 0, 0, 0.123);
+    border-radius: 50%;
+}
+
+.opponent p, .player p {
+    padding: 0;
+    font-size: 10px;
+    text-align: center;
+    color: burlywood;
+}
+
+.san-move {
+    width: 100px;
+    max-width: 100px;
+    height: 150px;
+    overflow-y: scroll;
+    color: burlywood;
+    font-size: 15px;
+    border: 1px solid burlywood;
+    border-radius: 10%;
+
+}
+
+.chess-button
+{
+    border: 2px solid burlywood;
+    border-radius: 5px;
+}
+
+.chess-button button {
+    padding: 0;
+    background-color: transparent;
+    color: burlywood;
+    width: 3em;
+    height: 3em;
+}
