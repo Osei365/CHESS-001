@@ -2,6 +2,7 @@ html{
     height: 100vh;
     padding: 0;
 }
+
 body { 
     margin: 0;
     height: 100%;
@@ -12,16 +13,16 @@ body {
     grid-template-columns: repeat(8, 3em);
     grid-auto-rows: 3em;
     border: 2em ridge transparent;
-    border-image: url('../static/images/wood2.jpeg') 50 repeat;
+    border-image: url('../images/wood2.jpeg') 50 repeat;
     box-shadow: 10px 5px 5px rgba(0, 0, 0, 0.231);
 }
 
 .even {
-    background-image: url('../static/images/images.jpeg');
+    background-image: url('../images/images.jpeg');
     background-repeat: repeat;
 }
 .odd {
-    background-image: url('../static/images/wooden-laminate-sheet.jpg');
+    background-image: url('../images/wooden-laminate-sheet.jpg');
     background-repeat: repeat;
 }
 
