@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CHESS</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js"></script>
+
+    <style>
+        html{
+            height: 100vh;
+            padding: 0;
+        }
+        body { 
+            margin: 0;
+            height: 100%;
+            background-color: rgb(33, 30, 30);
+         }
+        .wrapper {
+            display: grid;
+            grid-template-columns: repeat(8, 60px);
+            grid-auto-rows: 60px;
+            border: 45px ridge transparent;
+            border-image: url('../static/images/wood2.jpeg') 50 repeat;
+            box-shadow: 10px 5px 5px rgba(0, 0, 0, 0.231);
+        }
+
+        .even {
+            background-image: url('../static/images/images.jpeg');
+            background-repeat: repeat;
+        }
+        .odd {
+            background-image: url('../static/images/wooden-laminate-sheet.jpg');
+            background-repeat: repeat;
+        }
+
+        img {
+            width: 60px;
+            height: 60px;
+        }
+
+        .hide {
+            display: none;
+        }
+
+        .drag-over {
+            border: solid 3px yellow;
+        }
+
+        .chess-container {
+            height: 100%;
+            display: flex;
+            justify-content: space-evenly;
+            align-items: center;    
+        }
+
+        .first-part {
+            display: flex;
+            justify-content: center;
+        }
+
+        .second-part {
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-evenly;
+            align-items: center;
+            padding-bottom: 50px;
+        }
+
+        .clock {
+            font-size: 100px;
+            font-weight: bold;
+            color: rgba(222, 184, 135, 0.42);
+        }
+
+        .opponent {
+            height: 90%;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            align-items: center;
+            margin-left: 10px;
+        }
+
+        .player {
+            height: 90%;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            margin-right: 10px;
+            align-items: center;
+        }
+
+        
+
+        .avatar img {
+            width: 40px;
+            height: 40px;
+            border: 1px solid rgba(0, 0, 0, 0.123);
+            border-radius: 50%;
+        }
+
+        .opponent p, .player p {
+            padding: 0;
+            text-align: center;
+            color: burlywood;
+        }
+
+        .san-move {
+            width: 70%;
+            height: 30%;
+            overflow-y: auto;
+            color: burlywood;
+            font-size: 15px;
+            border: 1px solid burlywood;
+            border-radius: 10%;
+            padding: 15px;
+        }  
+    </style>
+</head>
+<body onload="startTimer()">
+    <div class="chess-container">
+        <div class="first-part">
+            <div class="player">
+                <div class="avatar">
+                    <img src="../static/images/download.png">
+                </div>
+                <p>you</p>
+            </div>
+            <div class="wrapper">
+                {% for square in squares %}
+                {% if square[0] == 'a1' %}
+                <div id="{{square[0]}}" class="{{square[1]}} box"><img ondragstart="dragStart(event)" id="wR1" src="../static/images/wikipedia/wR.png" draggable="true"></div>
+                {% elif square[0] == 'b1' %}
+                <div id="{{square[0]}}" class="{{square[1]}} box"><img ondragstart="dragStart(event)" id="wN1" src="../static/images/wikipedia/wN.png" draggable="true"></div>
+                {% elif square[0] == 'c1' %}
+                <div id="{{square[0]}}" class="{{square[1]}} box"><img ondragstart="dragStart(event)" id="wB1" src="../static/images/wikipedia/wB.png" draggable="true"></div>
+                {% elif square[0] == 'd1' %}
+                <div id="{{square[0]}}" class="{{square[1]}} box"><img ondragstart="dragStart(event)" id="wQ" src="../static/images/wikipedia/wQ.png" draggable="true"></div>
+                {% elif square[0] == 'e1' %}
+                <div id="{{square[0]}}" class="{{square[1]}} box"><img ondragstart="dragStart(event)" id="wK" src="../static/images/wikipedia/wK.png" draggable="true"></div>
+                {% elif square[0] == 'f1' %}
+                <div id="{{square[0]}}" class="{{square[1]}} box"><img ondragstart="dragStart(event)" id="wB2" src="../static/images/wikipedia/wB.png" draggable="true"></div>
+                {% elif square[0] == 'g1' %}
+                <div id="{{square[0]}}" class="{{square[1]}} box"><img ondragstart="dragStart(event)" id="wN2" src="../static/images/wikipedia/wN.png" draggable="true"></div>
+                {% elif square[0] == 'h1' %}
+                <div id="{{square[0]}}" class="{{square[1]}} box"><img ondragstart="dragStart(event)" id="wR2" src="../static/images/wikipedia/wR.png" draggable="true"></div>
+                {% elif square[0] == 'a8' %}
+                <div id="{{square[0]}}" class="{{square[1]}} box"><img ondragstart="dragStart(event)" id="bR1" src="../static/images/wikipedia/bR.png" draggable="true"></div>
+                {% elif square[0] == 'b8' %}
+                <div id="{{square[0]}}" class="{{square[1]}} box"><img ondragstart="dragStart(event)" id="bN1" src="../static/images/wikipedia/bN.png" draggable="true"></div>
+                {% elif square[0] == 'c8' %}
+                <div id="{{square[0]}}" class="{{square[1]}} box"><img ondragstart="dragStart(event)" id="bB1" src="../static/images/wikipedia/bB.png" draggable="true"></div>
+                {% elif square[0] == 'd8' %}
+                <div id="{{square[0]}}" class="{{square[1]}} box"><img ondragstart="dragStart(event)" id="bQ" src="../static/images/wikipedia/bQ.png" draggable="true"></div>
+                {% elif square[0] == 'e8' %}
+                <div id="{{square[0]}}" class="{{square[1]}} box"><img ondragstart="dragStart(event)" id="bK" src="../static/images/wikipedia/bK.png" draggable="true"></div>
+                {% elif square[0] == 'f8' %}
+                <div id="{{square[0]}}" class="{{square[1]}} box"><img ondragstart="dragStart(event)" id="bB2" src="../static/images/wikipedia/bB.png" draggable="true"></div>
+                {% elif square[0] == 'g8' %}
+                <div id="{{square[0]}}" class="{{square[1]}} box"><img ondragstart="dragStart(event)" id="bN2" src="../static/images/wikipedia/bN.png" draggable="true"></div>
+                {% elif square[0] == 'h8' %}
+                <div id="{{square[0]}}" class="{{square[1]}} box"><img ondragstart="dragStart(event)" id="bR2" src="../static/images/wikipedia/bR.png" draggable="true"></div>
+                {% elif square[0] in pwhite %}
+                <div id="{{square[0]}}" class="{{square[1]}} box"><img ondragstart="dragStart(event)" id="{{loop.cycle('wp1', 'wp2', 'wp3', 'wp4', 'wp5', 'wp6', 'wp7', 'wp8')}}" src="../static/images/wikipedia/wP.png" draggable="true"></div>
+                {% elif square[0] in pblack %}
+                <div id="{{square[0]}}" class="{{square[1]}} box"><img ondragstart="dragStart(event)" id="{{loop.cycle('bp1', 'bp2', 'bp3', 'bp4', 'bp5', 'bp6', 'bp7', 'bp8')}}" src="../static/images/wikipedia/bP.png" draggable="true"></div>
+                {% else %}
+                <div id="{{square[0]}}" class="{{square[1]}} box"></div>
+                {%endif%}
+                {% endfor %}
+            </div>
+            
+            <div class="opponent">
+                <div class="avatar">
+                    <img src="../static/images/download.png">    
+                </div>
+                <p>komodo</p>   
+            </div>
+        </div>
+        
+        <div class="second-part">
+            <h1 class="clock">00:00</h1>
+            <div class="san-move">
+            </div>
+            <div>
+                <div class="btn-group btn-group-lg" role="group" aria-label="preventDefault button group">
+                    <button type="button" class="btn btn-outline-primary" id="reset">reset</button>
+                    <button type="button" class="btn btn-outline-primary" id="undo">undo</button>
+                    <button type="button" class="btn btn-outline-primary" id="pause">pause</button>
+                    <button type="button" class="btn btn-outline-primary" id="play">play</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+
+<script>
+    let fen_string = '';
+    const fen_list = [fen_string];
+    const move_list = [];
+    let start = null;
+    let timer = null;
+    let diff = null;
+
+    function dragStart (e) {
+        e.dataTransfer.setData('text/plain', e.target.id);
+        setTimeout(() => {
+            e.target.classList.add('hide');
+        }, 0);
+    }
+
+    boxes = document.querySelectorAll('.box')
+
+
+    boxes.forEach(element => {
+        element.addEventListener('dragenter', dragEnter);
+        element.addEventListener('dragover', dragOver);
+        element.addEventListener('dragleave', dragLeave);
+        element.addEventListener('drop', drop)
+    });
+
+    function dragEnter (e) {
+        e.preventDefault();
+        if (e.target.tagName === 'IMG') {
+            let parent = e.target.parentElement;
+            parent.classList.add('drag-over');
+        }
+        else {
+            e.target.classList.add('drag-over');
+        }
+    }
+
+    function dragOver (e) {
+        e.preventDefault();
+        if (e.target.tagName === 'IMG') {
+            let parent = e.target.parentElement;
+            parent.classList.add('drag-over');
+        }
+        else {
+            e.target.classList.add('drag-over');
+        }
+        
+    }
+
+    function dragLeave (e) {
+        if (e.target.tagName === 'IMG') {
+            let parent = e.target.parentElement;
+            parent.classList.remove('drag-over');
+        }
+        else {
+            e.target.classList.remove('drag-over');
+        }
+        
+    }
+
+    function drop (e) {
+        // e.preventDefault();
+        e.target.classList.remove('drag-over')
+
+        const id = e.dataTransfer.getData('text/plain');
+        if (e.target.tagName === 'IMG') {
+            let parent = e.target.parentElement;
+            parent.classList.remove('drag-over')
+            new_id = parent.id;
+        }
+        else {
+            new_id = e.target.id;
+        }
+        
+        const draggable = document.getElementById(id);
+        const parent = draggable.parentElement;
+        console.log(parent.id+new_id);
+
+        $.ajax({
+            type: 'POST',
+            url: 'http://127.0.0.1:5000/play',
+            data: JSON.stringify({'move': parent.id+new_id, 'fen': fen_list[fen_list.length - 1]}),
+            dataType: 'json',
+            contentType: 'application/json',
+            success: function (data) {
+                console.log(data['answer']);
+                if (data['answer'] === 'true') {
+                    if (e.target.tagName === 'IMG') {
+                        let parent = e.target.parentElement;
+                        e.target.classList.add('hide')
+                        parent.insertBefore(draggable, parent.firstChild);
+                    }
+                    else {
+                        e.target.insertBefore(draggable, e.target.firstChild);
+                    }
+                    $('.san-move').append(`${data['san']} `);
+                    move_list.push(parent.id+new_id);
+                    console.log(move_list);
+                    fen_string = data['fen'];
+                    fen_list.push(fen_string);
+                    console.log(fen_list);
+
+                    computerPlayer(data['fen']);
+                }
+                
+            }
+        });
+        draggable.classList.remove('hide');
+    }
+
+    function undo () {
+        if (move_list.length >= 1) {
+            const str = move_list[move_list.length - 1];
+            const drop_string = str.substring(0, 2);
+            const drag_string = str.substring(2, 4);
+
+            const element1 = document.getElementById(drop_string);
+            const element2 = document.getElementById(drag_string);
+            console.log(element1)
+            console.log(element1.firstChild);
+            element1.insertBefore(element2.firstChild, element1.firstChild);
+            if (element2.childNodes.length > 0) {
+                element2.firstChild.classList.remove('hide');
+            }
+            move_list.pop();
+            fen_list.pop();
+            console.log(fen_list);   
+        }
+    }
+
+    function reset () {
+        const l = move_list.length;
+        for (let i = 1; i <= l; i++) {
+            undo();
+        }
+        startTimer();
+    }
+
+    function computerPlayer (fen) {
+        $.ajax({
+            type: 'POST',
+            url: 'http://127.0.0.1:5000/computer',
+            data: JSON.stringify({'fen': fen}),
+            dataType: 'json',
+            contentType: 'application/json',
+            success: function (data) {
+                console.log(data['move']);
+                str = data['move']
+                const drop_string = str.substring(0, 2);
+                const drag_string = str.substring(2, 4);
+
+                const element1 = document.getElementById(drop_string);
+                const element2 = document.getElementById(drag_string);
+
+                if (element2.childNodes.length === 0) {
+                    element2.appendChild(element1.firstChild);
+                }
+                else {
+                    element2.firstChild.classList.add('hide')
+                    element2.insertBefore(element1.firstChild, element2.firstChild)
+                }
+                $('.san-move').append(`${data['san']} `);
+                move_list.push(str);
+                console.log(move_list);
+                fen_string = data['fen'];
+                fen_list.push(fen_string);
+
+            }
+        });
+    }
+
+    function startTimer () {
+        console.log('started');
+        const date =  new Date();
+        start = date.getTime();
+        showTimer();
+    }
+
+    function showTimer () {
+        console.log('show time');
+        let hr, min, sec;
+        timer = setInterval(() => {
+            diff = new Date().getTime() - start;
+
+            hr = parseInt(diff/1000/60/60);
+            hr = hr < 10 ? '0' + hr : hr;
+
+            min = parseInt(diff/1000/60);
+            if (min > 59) {min %= 60};
+            min = min < 10 ? '0' + min : min;
+            
+            sec = parseInt(diff/1000);
+            if (sec > 59) {sec %= 60};
+            sec = sec < 10 ? '0' + sec : sec;
+            
+            $('.clock').text(`${hr}:${min}:${sec}`);
+        }, 10);
+    }
+
+    $('#pause').on('click', function () {
+        console.log(diff);
+        clearInterval(timer);
+        $(this).prop('disabled', true);
+        $('#play').prop('disabled', false);
+    });
+
+    $('#play').on('click', function () {
+        console.log(start);
+        start = start + (new Date().getTime() - (diff + start));
+        console.log(start)
+        showTimer();
+        $(this).prop('disabled', true);
+        $('#pause').prop('disabled', false); 
+    });
+
+    $('#undo').on('click', function () {
+        undo();
+        undo();
+    });
+
+    $('#reset').on('click', function () {
+        reset();
+        $('#pause').prop('disabled', false);
+        $('#play').prop('disabled', true);
+    });
+</script>
