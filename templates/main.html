@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CHESS</title>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <link rel="stylesheet" href="../static/styles/floating.css">
+    <link rel="stylesheet" href="../static/styles/cover.css">
+
+    <link rel="canonical" href="https://getbootstrap.com/docs/5.0/examples/checkout/">
+
+    <style>
+        body {
+            color: burlywood;
+            margin: 0;
+        }
+
+        
+    </style>
+</head>
+<body>
+  <div class="cover-container d-flex w-100 h-100 p-3 mx-auto flex-column">
+    <header class="mb-auto">
+    <div>
+      <h3 class="float-md-start mb-0">Cover</h3>
+      <nav class="nav nav-masthead justify-content-center float-md-end">
+        <a class="nav-link fw-bold py-1 px-0 active" aria-current="page" href="#">Home</a>
+        <a class="nav-link fw-bold py-1 px-0" href="#">Features</a>
+        <a class="nav-link fw-bold py-1 px-0" href="#">Contact</a>
+      </nav>
+    </div>
+    </header>
+    <form class="form-signin" action="http://127.0.0.1:5000/init" method="post">
+        <div class="text-center mb-4">
+          <img class="mb-4" src="../static/images/download (1).jpeg" alt="" width="144" height="144">
+          <h1 class="h3 mb-3 font-weight-normal">CHESS GAME</h1>
+          <p>Play and practice your chess skills against popuplar chess engines. You get to practice based on the style of chess you might be interested in.</p>
+        </div>
+      
+        <!-- <div class="form-label-group">
+          <input type="email" id="inputEmail" class="form-control" placeholder="Email address" required autofocus>
+          <label for="inputEmail">Email address</label>
+        </div>
+      
+        <div class="form-label-group">
+          <input type="password" id="inputPassword" class="form-control" placeholder="Password" required>
+          <label for="inputPassword">Password</label>
+        </div> -->
+
+        <div class="form-label-group">
+            <label for="comp_engine"><strong>OPPONENT</strong></label>
+            <select class="custom-select mb-3" name="comp_engine" required>
+              <option value="">Choose...</option>
+              <option>stockfish</option>
+              <option>komodo</option>
+            </select>
+        </div>
+        <button class="btn btn-primary btn-block" type="submit">PLAY GAME</button>
+        <p class="mt-5 mb-3 text-muted text-center">&copy; 2017-2019</p>
+    </form>
+  </div>
+</body>
+</html>

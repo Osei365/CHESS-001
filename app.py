@@ -1,18 +1,36 @@
 import chess
 import chess.engine
-from flask import Flask, render_template, request, jsonify
+from flask import (
+    Flask, 
+    render_template, 
+    request, 
+    jsonify, 
+    redirect)
 
 app = Flask(__name__)
-engine= chess.engine.SimpleEngine.popen_uci(r"C:\Users\user\Downloads\stockfish-windows-x86-64-avx2\stockfish\stockfish-windows-x86-64-avx2.exe")
+engine= ""
+
+engine_dict = {
+    'stockfish' : r"C:\Users\user\Downloads\stockfish-windows-x86-64-avx2\stockfish\stockfish-windows-x86-64-avx2.exe",
+    'komodo' : r"C:\Users\user\Downloads\komodo-14\komodo-14_224afb\Windows\komodo-14.1-64bit-bmi2.exe"
+}
 
 @app.route('/', strict_slashes=False)
 def index():
+    return render_template('main.html')
+
+@app.route('/chess', strict_slashes=False)
+def chess_game():
+    global engine
+    if engine == "":
+        return redirect('http://127.0.0.1:5000/')
     org = []
     for i in range(8, 0, -1):
         val = i * 8
         for n in range(8, 0, -1):
             org.append(chess.SQUARE_NAMES[val - n])
     squares=[]
+    print(chess.SQUARE_NAMES)
     for pos in range(len(chess.SQUARE_NAMES)):
         row = []
         row.append(org[pos])
@@ -29,21 +47,32 @@ def index():
         squares.append(row)
     pawn_white = ['a2', 'b2', 'c2', 'd2', 'e2', 'f2', 'g2', 'h2']
     pawn_black = ['a7', 'b7', 'c7', 'd7', 'e7', 'f7', 'g7', 'h7']
+    opponent = engine.id['name']
+    print(squares)
     
-    return render_template('index.html', squares=squares, pwhite=pawn_white, pblack=pawn_black)
+    return render_template(
+        'chess.html', 
+        squares=squares, 
+        pwhite=pawn_white, 
+        pblack=pawn_black,
+        opponent=opponent
+        )
 
 @app.route('/play', methods=['POST'], strict_slashes=False)
 def play_game():
     dic = request.get_json()
+    if dic['move'][0:2] == dic['move'][2:4]:
+        return jsonify({'answer': 'false'})
     board = chess.Board(dic['fen'])
     move = chess.Move.from_uci(dic['move'])
     result = {'fen': board.fen()}
     if move in board.legal_moves:
         result['answer'] = 'true'
         result['san'] = str(board.san(move))
-        print(move)
         board.push(move)
-        print(board)
+        result['status'] = board.turn
+        result['ischeck'] = board.is_check()
+        result['ischeckmate'] = board.is_checkmate()
         result['fen'] = board.fen()
         
     else:
@@ -60,9 +89,24 @@ def computer():
     print(result.move)
     board.push(result.move)
     print(board)
+    new_dic['status'] = board.turn
+    new_dic['ischeck'] = board.is_check()
+    new_dic['ischeckmate'] = board.is_checkmate()
     new_dic['fen'] = board.fen()
     
     return jsonify(new_dic)
+
+@app.route('/init', methods=['POST'], strict_slashes=False)
+def initiliaze():
+    print(request.form.get('comp_engine'))
+
+    #get the global engine variable
+    global engine
+
+    # set the engine to the one selected
+    engine = chess.engine.SimpleEngine.popen_uci(engine_dict[str(request.form.get('comp_engine'))])
+    print(engine.id)
+    return redirect('http://127.0.0.1:5000/chess')
 
 
 if __name__ == "__main__":

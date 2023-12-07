@@ -7,11 +7,12 @@ body {
     margin: 0;
     height: 100%;
     background-color: rgb(33, 30, 30);
+    color: burlywood;
  }
 .wrapper {
     display: grid;
-    grid-template-columns: repeat(8, 3em);
-    grid-auto-rows: 3em;
+    grid-template-columns: repeat(8, 3.4em);
+    grid-auto-rows: 3.4em;
     border: 2em ridge transparent;
     border-image: url('../images/wood2.jpeg') 50 repeat;
     box-shadow: 10px 5px 5px rgba(0, 0, 0, 0.231);
@@ -27,8 +28,8 @@ body {
 }
 
 img {
-    width: 3em;
-    height: 3em;
+    width: 3.4em;
+    height: 3.4em;
 }
 
 .hide {
@@ -56,7 +57,7 @@ img {
     height: 100%;
     display: flex;
     flex-direction: column;
-    justify-content: space-evenly;
+    justify-content: space-around;
     align-items: center;
     padding-bottom: 50px;
     margin-left: 2em;
@@ -74,44 +75,48 @@ img {
     flex-direction: column;
     justify-content: flex-start;
     align-items: center;
-    margin-left: 10px;
+    margin-right: 10px;
 }
 
 .player {
-    height: 90%;
+    height: 34em;
     display: flex;
     flex-direction: column;
     justify-content: flex-end;
-    margin-right: 10px;
+    margin-left: 10px;
     align-items: center;
 }
 
 
 
 .avatar img {
-    width: 1em;
-    height: 1em;
+    width: 1.5em;
+    height: 1.5em;
     border: 1px solid rgba(0, 0, 0, 0.123);
     border-radius: 50%;
 }
 
 .opponent p, .player p {
     padding: 0;
-    font-size: 10px;
+    font-size: 15px;
     text-align: center;
     color: burlywood;
 }
 
 .san-move {
-    width: 100px;
-    max-width: 100px;
+    box-sizing: border-box;
+    width: 150px;
+    max-width: 150px;
     height: 150px;
     overflow-y: scroll;
     color: burlywood;
     font-size: 15px;
     border: 1px solid burlywood;
     border-radius: 10%;
-
+    padding: 20px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-auto-rows: 0.2fr;
 }
 
 .chess-button
@@ -124,6 +129,53 @@ img {
     padding: 0;
     background-color: transparent;
     color: burlywood;
-    width: 3em;
+    width: 5em;
     height: 3em;
+}
+
+.game {
+    text-align: center;
+}
+
+.danger {
+    box-shadow: inset 0 0 60px rgba(255, 0, 0);
+}
+
+.glow {
+    box-shadow: inset 0 0 120px #85C1E9;
+}
+
+.check-mate {
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.767);
+    color: burlywood;
+    display: none;
+    
+}
+.mate-message {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: auto;
+    height: 400px;
+}
+
+.mate-message  h1{
+    color: red;
+    font-size: 35px;
+    font-weight: bold;
+}
+
+.btn-outline-primary, .btn-outline-primary:hover, .btn-outline-primary:disabled {
+    border-color: burlywood;
+    color: burlywood;
+}
+
+.btn-outline-primary:hover {
+    background-color: transparent;
 }
