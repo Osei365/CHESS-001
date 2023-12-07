@@ -344,6 +344,8 @@ $('document').ready(() => {
 
     $('#reset').on('click', function () {
         // resets the entire game
+        console.log('reset');
+        $('.check-mate').css('display', 'none');
         reset_chess();
         endTimer();
         diff = 0;

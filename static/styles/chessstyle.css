@@ -3,11 +3,22 @@ html{
     padding: 0;
 }
 
+@font-face {
+    font-family: myfont;
+    src: url(../styles/Befolk-Font/Befolk\ Script.ttf);
+}
+
+@font-face {
+    font-family: myfont1;
+    src: url(../styles/OnlineWebFonts_COM_09e3500cb1d4608c416fa7c4a8be7359/l/l.ttf);
+}
+
 body { 
     margin: 0;
     height: 100%;
     background-color: rgb(33, 30, 30);
     color: burlywood;
+    font-family:myfont1;
  }
 .wrapper {
     display: grid;
@@ -59,7 +70,7 @@ img {
     flex-direction: column;
     justify-content: space-around;
     align-items: center;
-    padding-bottom: 50px;
+    
     margin-left: 2em;
 }
 
@@ -163,6 +174,7 @@ img {
     align-items: center;
     width: auto;
     height: 400px;
+    z-index: 1000;
 }
 
 .mate-message  h1{
