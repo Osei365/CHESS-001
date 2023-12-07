@@ -177,6 +177,10 @@ img {
     z-index: 1000;
 }
 
+.mate-message .btn-outline-primary {
+    z-index: 1000;
+}
+
 .mate-message  h1{
     color: red;
     font-size: 35px;
