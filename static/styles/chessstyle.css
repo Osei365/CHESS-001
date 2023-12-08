@@ -164,8 +164,7 @@ img {
     height: 100vh;
     background-color: rgba(0, 0, 0, 0.767);
     color: burlywood;
-    display: none;
-    
+    z-index: 0;
 }
 .mate-message {
     display: flex;
@@ -178,13 +177,15 @@ img {
 }
 
 .mate-message .btn-outline-primary {
-    z-index: 1000;
+    margin-top: 20px;
+    z-index: 5000;
 }
 
 .mate-message  h1{
     color: red;
     font-size: 35px;
     font-weight: bold;
+    margin-bottom: 20px;
 }
 
 .btn-outline-primary, .btn-outline-primary:hover, .btn-outline-primary:disabled {

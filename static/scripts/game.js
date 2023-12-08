@@ -1,9 +1,10 @@
-let default_fen = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1';
+const default_fen = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1';
 const fen_list = [default_fen];
 const move_list = [];
 const san_list = [];
 let timer = null;
 let diff = null;
+let gameover;
 let boxes;
 
 
@@ -137,7 +138,8 @@ function drop (e) {
                 console.log(data['ischeckmate']);
                 if (data['ischeckmate']) {
                     endTimer();
-                    $('.check-mate').css('display', 'block');
+                    gameover.classList.remove('hide');
+                    // $('.check-mate').css('display', 'block');
                 }
                 console.log(move_list);
                 fen_list.push(data['fen']);
@@ -261,7 +263,8 @@ function computerPlayer (fen) {
             console.log(data['ischeckmate']);
             if (data['ischeckmate']) {
                 endTimer();
-                $('.check-mate').css('display', 'block');
+                gameover.classList.remove('hide');
+                // $('.check-mate').css('display', 'block');
             }
             console.log(move_list);
             fen_list.push(data['fen']);
@@ -305,7 +308,9 @@ function showTimer () {
 
 
 $('document').ready(() => {
-    boxes = document.querySelectorAll('.box')
+    boxes = document.querySelectorAll('.box');
+    gameover = document.querySelector('.check-mate');
+    gameover.classList.add('hide');
 
 
     boxes.forEach(element => {
@@ -345,7 +350,6 @@ $('document').ready(() => {
     $('#reset').on('click', function () {
         // resets the entire game
         console.log('reset');
-        $('.check-mate').css('display', 'none');
         reset_chess();
         endTimer();
         diff = 0;
