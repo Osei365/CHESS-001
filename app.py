@@ -11,8 +11,8 @@ app = Flask(__name__)
 engine= ""
 
 engine_dict = {
-    'stockfish' : "stockfish-windows-x86-64-avx2/stockfish-windows-x86-64-avx2.exe",
-    'komodo' : "komodo-14/komodo-14.1-64bit-bmi2.exe"
+    'stockfish' : r"C:\Users\owner\CHESS-001\stockfish\stockfish-windows-x86-64.exe",
+    'komodo' : r"C:\Users\owner\CHESS-001\komodo3-64-win\komodo3-64.exe"
 }
 
 @app.route('/', strict_slashes=False)
