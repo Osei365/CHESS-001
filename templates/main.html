@@ -10,7 +10,7 @@
     <link rel="stylesheet" href="../static/styles/floating.css">
     <link rel="stylesheet" href="../static/styles/cover.css">
 
-    <link rel="canonical" href="https://getbootstrap.com/docs/5.0/examples/checkout/">
+    
 
     <style>
         body {
@@ -22,16 +22,16 @@
     </style>
 </head>
 <body>
-  <div class="cover-container d-flex w-100 h-100 p-3 mx-auto flex-column">
+  <div class="cover-container d-flex w-100 p-3 mx-auto flex-column">
     <header class="mb-auto">
-    <div>
-      <h3 class="float-md-start mb-0">Cover</h3>
-      <nav class="nav nav-masthead justify-content-center float-md-end">
-        <a class="nav-link fw-bold py-1 px-0 active" aria-current="page" href="#">Home</a>
-        <a class="nav-link fw-bold py-1 px-0" href="#">Features</a>
-        <a class="nav-link fw-bold py-1 px-0" href="#">Contact</a>
-      </nav>
-    </div>
+      <div class="d-flex justify-content-between mx-2">
+        <h3 class="mb-0">Cover</h3>
+        <nav class="nav nav-masthead justify-content-center">
+          <a class="nav-link fw-bold py-1 px-0 active" aria-current="page" href="#">Home</a>
+          <a class="nav-link fw-bold py-1 px-0" href="#">Features</a>
+          <a class="nav-link fw-bold py-1 px-0" href="#">Contact</a>
+        </nav>
+      </div>
     </header>
     <form class="form-signin" action="http://127.0.0.1:5000/init" method="post">
         <div class="text-center mb-4">
@@ -50,13 +50,29 @@
           <label for="inputPassword">Password</label>
         </div> -->
 
+        
         <div class="form-label-group">
             <label for="comp_engine"><strong>OPPONENT</strong></label>
-            <select class="custom-select mb-3" name="comp_engine" required>
+            <select class="form-select form-select-sm mb-3" name="comp_engine" required>
               <option value="">Choose...</option>
               <option>stockfish</option>
               <option>komodo</option>
             </select>
+        </div>
+        <div class="form-label-group">
+          <label for="comp_engine"><strong>CHESS STYLE</strong></label>
+          <select class="form-select form-select-sm mb-3" name="chess-style" required>
+            <option value="">Choose...</option>
+            <option>blitz</option>
+            <option>classical</option>
+          </select>
+      </div>
+
+        <div class="form-check mb-4">
+          <input class="form-check-input" type="checkbox" value="b" id="flexCheckDefault" name="whotostart">
+          <label class="form-check-label" for="flexCheckDefault">
+            <strong>TO START?</strong> 
+          </label>
         </div>
         <button class="btn btn-primary btn-block" type="submit">PLAY GAME</button>
         <p class="mt-5 mb-3 text-muted text-center">&copy; 2017-2019</p>

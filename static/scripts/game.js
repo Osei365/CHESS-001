@@ -2,10 +2,18 @@ const default_fen = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1';
 const fen_list = [default_fen];
 const move_list = [];
 const san_list = [];
-let timer = null;
+const forwardPos = [];
 let diff = null;
+let timer = null;
 let gameover;
 let boxes;
+let bodyEl;
+let playerTimeEl;
+let oppTimeEl;
+let opponentTime;
+let playerTime;
+
+
 
 
 
@@ -89,7 +97,12 @@ function drop (e) {
                 }
                 const to = document.getElementById(new_id);
 
-                if (to.childNodes.length > 0) {to.firstChild.classList.add('hide')}
+                if (to.childNodes.length === 0 || to.firstChild.classList.contains('hide')) {
+                    forwardPos.push('empty');
+                } else if (!to.firstChild.classList.contains('hide')) {
+                    forwardPos.push('notEmpty');
+                    to.firstChild.classList.add('hide');
+                }
                 to.insertBefore(draggable, to.firstChild);
 
                 // adding a glow to the position that a piece got moved to
@@ -102,29 +115,33 @@ function drop (e) {
                 
 
                 // handling the castling move in chess
-                if (parent.id+new_id === 'e1g1' && data['san'] === 'O-O') {
-                    console.log(data['san']);
-                    let h1 = document.getElementById('h1');
-                    let f1 = document.getElementById('f1');
-                    f1.insertBefore(h1.firstChild, f1.firstChild);
-                    move_list.push(parent.id+new_id+'h1f1');
-                } else if (parent.id+new_id === 'e1c1' && data['san'] === 'O-O-O') {
-                    console.log(data['san']);
-                    let a1 = document.getElementById('a1');
-                    let d1 = document.getElementById('d1');
-                    d1.insertBefore(a1.firstChild, d1.firstChild);
-                    move_list.push(parent.id+new_id+'a1d1');
+                if (bodyEl.classList.contains('b')) {
+                    castlingBlack (parent.id+new_id, data); 
                 } else {
-                    move_list.push(parent.id+new_id);
+                    castlingWhite (parent.id+new_id, data);      
                 }
 
+                if (playerTimeEl !== null &&  oppTimeEl !== null) {
+                    console.log('blitz')
+                    if (timer !== null) {
+                        clearInterval(timer);
+                    }
+                    oppTimer();
+                }
                 // adding the san notation for each move after the move 
                 // has been made
                 $('.san-move').append(`<div>${data['san']}</div>`);
 
                 // updating the status of the game (who to move?)
                 $('whotomove').text('BLACK TO MOVE')
-                const king = document.getElementById('bK');
+
+                // makes background red when opponent's king is on check
+                let king;
+                if (bodyEl.classList.contains('b')) {
+                    king = document.getElementById('wK');
+                } else {
+                    king = document.getElementById('bK');
+                }
                 const host = king.parentElement;
                 if (data['ischeck'] === true) {
                     host.classList.add('danger');
@@ -137,7 +154,7 @@ function drop (e) {
                 }
                 console.log(data['ischeckmate']);
                 if (data['ischeckmate']) {
-                    endTimer();
+                    clearInterval(timer);
                     gameover.classList.remove('hide');
                     // $('.check-mate').css('display', 'block');
                 }
@@ -145,6 +162,7 @@ function drop (e) {
                 fen_list.push(data['fen']);
                 console.log(fen_list);
 
+                setTimeout('', 100000);
                 computerPlayer(data['fen']);
             }
             
@@ -170,14 +188,15 @@ function undo () {
                 castling2.firstChild.classList.remove('hide');
             }
         }
-        console.log(str)
+        console.log(str);
         const element1 = document.getElementById(str.substring(0, 2));
         const element2 = document.getElementById(str.substring(2, 4));
         element1.insertBefore(element2.firstChild, element1.firstChild);
-        if (element2.childNodes.length > 0) {
+        if (forwardPos[forwardPos.length - 1] === 'notEmpty') {
             element2.firstChild.classList.remove('hide');
         }
         move_list.pop();
+        forwardPos.pop();
         fen_list.pop();
         $('.san-move').children().last().remove();
         console.log(fen_list);   
@@ -215,12 +234,15 @@ function computerPlayer (fen) {
             const element1 = document.getElementById(str.substring(0, 2));
             const element2 = document.getElementById(str.substring(2, 4));
 
-            if (element2.childNodes.length === 0) {
-                element2.appendChild(element1.firstChild);
+            
+            if (element2.childNodes.length === 0 || element2.firstChild.classList.contains('hide')) {
+                element2.insertBefore(element1.firstChild, element2.firstChild);
+                forwardPos.push('empty');
             }
             else {
                 element2.firstChild.classList.add('hide')
                 element2.insertBefore(element1.firstChild, element2.firstChild)
+                forwardPos.push('notEmpty');
             }
 
             // making the present move to glow
@@ -230,25 +252,32 @@ function computerPlayer (fen) {
             element2.classList.add('glow');
             element1.classList.add('glow');
             
-            if (str === 'e8g8' && data['san'] === 'O-O') {
-                console.log(data['san']);
-                let h8 = document.getElementById('h8');
-                let f8 = document.getElementById('f8');
-                f8.insertBefore(h8.firstChild, f8.firstChild);
-                move_list.push(str+'h8f8');
-            } else if (str === 'e8c8' && data['san'] === 'O-O-O') {
-                console.log(data['san']);
-                let a8 = document.getElementById('a8');
-                let d8 = document.getElementById('d8');
-                d8.insertBefore(a8.firstChild, d8.firstChild);
-                move_list.push(str+'a8d8');
+
+            if (bodyEl.classList.contains('b')) {
+                castlingWhite (str, data); 
             } else {
-                move_list.push(str);
+                castlingBlack (str, data);      
             }
 
+            if (playerTimeEl !== null && oppTimeEl !== null) {
+                console.log('blitz timer')
+                if (timer !== null) {
+                    clearInterval(timer);
+                }
+                
+                playerTimer();
+            }
             $('.san-move').append(`<div>${data['san']}</div>`);
             $('whotomove').text('WHITE TO MOVE')
-            const king = document.getElementById('wK');
+            
+
+            // makes background red when opponent's king is on check
+            let king;
+            if (bodyEl.classList.contains('b')) {
+                king = document.getElementById('bK');
+            } else {
+                king = document.getElementById('wK');
+            }
             const host = king.parentElement;
             if (data['ischeck'] === true) {
                 host.classList.add('danger');
@@ -262,7 +291,7 @@ function computerPlayer (fen) {
             }
             console.log(data['ischeckmate']);
             if (data['ischeckmate']) {
-                endTimer();
+                clearInterval(timer);
                 gameover.classList.remove('hide');
                 // $('.check-mate').css('display', 'block');
             }
@@ -271,6 +300,85 @@ function computerPlayer (fen) {
 
         }
     });
+}
+
+function castlingWhite (str, data) {
+    if (str === 'e1g1' && data['san'] === 'O-O') {
+        console.log(data['san']);
+        const h1 = document.getElementById('h1');
+        const f1 = document.getElementById('f1');
+        f1.insertBefore(h1.firstChild, f1.firstChild);
+        move_list.push(str+'h1f1');
+    } else if (str === 'e1c1' && data['san'] === 'O-O-O') {
+        console.log(data['san']);
+        const a1 = document.getElementById('a1');
+        const d1 = document.getElementById('d1');
+        d1.insertBefore(a1.firstChild, d1.firstChild);
+        move_list.push(str+'a1d1');
+    } else {
+        move_list.push(str);
+    }
+}
+
+function castlingBlack (str, data) {
+    if (str === 'e8g8' && data['san'] === 'O-O') {
+        console.log(data['san']);
+        const h8 = document.getElementById('h8');
+        const f8 = document.getElementById('f8');
+        f8.insertBefore(h8.firstChild, f8.firstChild);
+        move_list.push(str+'h8f8');
+    } else if (str === 'e8c8' && data['san'] === 'O-O-O') {
+        console.log(data['san']);
+        const a8 = document.getElementById('a8');
+        const d8 = document.getElementById('d8');
+        d8.insertBefore(a8.firstChild, d8.firstChild);
+        move_list.push(str+'a8d8');
+    } else {
+        move_list.push(str);
+    }
+}
+
+function playerTimer () {
+
+    timer = setInterval(() => {
+        let min = Math.floor(playerTime / 60); 
+        let sec = playerTime % 60;
+
+        min = min < 10? '0' + min : min;
+        sec = sec < 10? '0' + sec : sec;
+
+        playerTimeEl.innerHTML = `${min}:${sec}`;
+
+        if (playerTime === 0) {
+            clearInterval(timer);
+            $('.time-up').removeClass('hide');
+        }
+
+        playerTime = playerTime - 1;
+    }, 1000)
+    
+}
+
+function oppTimer () {
+
+    timer = setInterval(() => {
+        let min = Math.floor(opponentTime / 60); 
+        let sec = opponentTime % 60;
+
+        min = min < 10? '0' + min : min;
+        sec = sec < 10? '0' + sec : sec;
+
+        oppTimeEl.innerHTML = `${min}:${sec}`;
+
+        if (opponentTime === 0) {
+            clearInterval(timer);
+            $('.time-up').removeClass('hide');
+            window.stop();
+        }
+
+        opponentTime = opponentTime - 1;
+    }, 1000)
+    
 }
 
 function startTimer () {
@@ -308,9 +416,32 @@ function showTimer () {
 
 
 $('document').ready(() => {
+    bodyEl = document.querySelector('body');
+
     boxes = document.querySelectorAll('.box');
     gameover = document.querySelector('.check-mate');
     gameover.classList.add('hide');
+
+    oppTimeEl = document.getElementById('blitz-clock1');
+    playerTimeEl = document.getElementById('blitz-clock2');
+
+    opponentTime= 5 * 60;
+    playerTime = 5 * 60;
+
+    if (bodyEl.classList.contains('classical')) {
+        bodyEl.onload = startTimer();
+    } else {
+        $('.time-up').addClass('hide');
+        playerTimeEl.innerHTML = `05:00`;
+        oppTimeEl.innerHTML = `05:00`;
+        if (bodyEl.classList.contains('b')) {
+            oppTimer();
+        } else {
+            playerTimer();
+        }
+    }
+
+    
 
 
     boxes.forEach(element => {
@@ -320,26 +451,7 @@ $('document').ready(() => {
         element.addEventListener('drop', drop)
     });
     $('#whotomove').text('WHITE TO MOVE');
-    $('#pause').on('click', function () {
-        console.log(diff);
-        // pause the time
-        endTimer();
-        console.log(timer);
-        $('.box > img').prop('draggable', false);
-        $(this).prop('disabled', true);
-        $('#play').prop('disabled', false);
-    });
-
-    $('#play').on('click', function () {
-        // console.log(start);
-        // // calculates the time when game was paused
-        // start = start + (new Date().getTime() - (diff + start));
-        // console.log(start)
-        showTimer();
-        $('.box img').prop('draggable', true);
-        $(this).prop('disabled', true);
-        $('#pause').prop('disabled', false); 
-    });
+    
 
     $('#undo').on('click', function () {
         // undos both the player and computer move
@@ -352,9 +464,74 @@ $('document').ready(() => {
         console.log('reset');
         reset_chess();
         endTimer();
+        window.stop();
         diff = 0;
-        startTimer();
+        if (bodyEl.classList.contains('classical')) {
+            startTimer();
+        } else {
+            playerTimeEl.innerHTML = `05:00`;
+            oppTimeEl.innerHTML = `05:00`;
+            playerTime = 5 * 60;
+            opponentTime = 5 * 60;
+
+            if (bodyEl.classList.contains('b')) {
+                oppTimer();
+                computerPlayer(default_fen);
+            } else {
+                playerTimer();
+            }
+        }
+        
         $('#pause').prop('disabled', false);
         $('#play').prop('disabled', true);
     });
+
+    $('#pause').on('click', function () {
+        console.log(diff);
+        // pause the time
+        endTimer();
+        console.log(timer);
+        $('.box > img').prop('draggable', false);
+        $(this).prop('disabled', true);
+        $('#play').prop('disabled', false);
+    });
+    
+    $('#play').on('click', function () {
+        // console.log(start);
+        // // calculates the time when game was paused
+        // start = start + (new Date().getTime() - (diff + start));
+        // console.log(start)
+        showTimer();
+        $('.box img').prop('draggable', true);
+        $(this).prop('disabled', true);
+        $('#pause').prop('disabled', false); 
+    });
+
+    $('#hint').on('click', () => {
+        $.ajax({
+            type: 'POST',
+            url: 'http://127.0.0.1:5000/hint',
+            data: JSON.stringify({'fen': fen_list[fen_list.length - 1]}),
+            dataType: 'json',
+            contentType: 'application/json',
+            success: function (data) {
+                const str = data['move'];
+
+                const el1 = document.getElementById(str.substring(0, 2));
+                const el2 = document.getElementById(str.substring(2, 4));
+
+                boxes.forEach((element) => {
+                    element.classList.remove('glow');
+                });
+
+                el2.classList.add('glow');
+                el1.classList.add('glow');
+            }
+        })
+    });
+
+    if (playerTimeEl.innerHTML === '00:00' || oppTimeEl.innerHTML === '00:00') {
+        clearInterval(timer);
+        $('.time-up').removeClass('hide');
+    }
 });
