@@ -123,6 +123,7 @@ def get_hint():
 @app.route('/init', methods=['POST'], strict_slashes=False)
 def initiliaze():
     dic = request.form
+
     # check if all required values are selected
     if 'blitz' not in dic.keys() or 'comp_engine' not in dic.keys():
         print(request.form)
