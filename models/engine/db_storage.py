@@ -1,5 +1,5 @@
 """handles db storage"""
-
+import models
 from models.user import User
 from models.game import Game
 from models.base_model import Base, BaseModel
@@ -32,7 +32,7 @@ class DbStorage():
                     key = obj.__class__.__name__ + '.' + obj.id
                     new_dict[key] = obj
         else:
-            objs = self.__session.query(classes[clss]).all()
+            objs = self.__session.query(cls).all()
             for obj in objs:
                 key = obj.__class__.__name__ + '.' + obj.id
                 new_dict[key] = obj
@@ -62,11 +62,11 @@ class DbStorage():
         self.__session.remove()
 
     def get(self, cls, id):
-        if cls:
-            if cls in classes.values():
-                return self.__session.query(cls).get(id)
-            return None
+        return self.__session.query(cls).get(id)
         
+    def get_google_id(self, cls, id):
+        if cls == User:
+            return self.__session.query(cls).filter(cls.google_id == id).first()
     def count(self, cls=None):
         """count ojects in a cls in storage."""
         objs = self.all(cls)

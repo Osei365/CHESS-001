@@ -1,0 +1,25 @@
+body {
+    margin: 0;
+    background-image: url('../images/pexels-pixabay-277124.jpg');
+    background-size: cover;
+    color: black;
+}
+
+.card {
+    background-color: rgba(33, 30, 30, 0.285);
+    border-color: burlywood;
+}
+
+.btn-primary, .btn-primary:hover, .btn-primary:disabled {
+    border-color: burlywood;
+    color: black;
+    background-color: rgba(222, 184, 135, 0.534);
+}
+
+.border-primary {
+    border-color: burlywood;
+}
+
+.hide {
+    display: none;
+}

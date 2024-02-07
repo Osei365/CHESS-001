@@ -1,6 +1,6 @@
 """base model that all other models inherit from"""
 
-from models import storage
+import models
 from sqlalchemy import Column, String, DateTime
 from sqlalchemy.ext.declarative import declarative_base
 from datetime import datetime
@@ -28,10 +28,13 @@ class BaseModel:
     def save(self):
         """saves an instance of base model"""
         self.updated_at = datetime.utcnow()
-        storage.new(self)
-        storage.save()
+        models.storage.new(self)
+        models.storage.save()
 
     def delete(self):
-        storage.delete(self)
+        models.storage.delete(self)
+
+    
+        
 
             
